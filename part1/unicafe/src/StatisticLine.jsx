@@ -1,3 +1,7 @@
-const StatisticLine = ({ text, value }) => <p>{text}: {value}</p>
+const StatisticLine = ({ text, value }) =>
+    <tr>
+        <th>{text}</th>
+        <td>{value}</td>
+    </tr>
 
 export default StatisticLine
