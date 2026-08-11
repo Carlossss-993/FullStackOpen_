@@ -23,7 +23,12 @@ const App = () => {
 
   const handleNext = () => {
     const rand = Math.floor(Math.random()*anecdotes.length)
-    rand === selected ? setSelected((rand+1)%anecdotes.length) : setSelected(rand)
+
+    if (rand === selected) {
+      setSelected((rand+1)%anecdotes.length)
+    } else {
+      setSelected(rand)
+    }
   }
 
   const handleVote = () => {
