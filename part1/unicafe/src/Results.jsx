@@ -1,9 +1,12 @@
-const Results = ({ good, neutral, bad }) => {
+import Header from "./Header"
+
+const Statistics = ({ good, neutral, bad }) => {
 
     const total = good + neutral + bad
 
     return (
         <div>
+            <Header text="Statistics"/>
             <p>Good: {good}</p>
             <p>Neutral: {neutral}</p>
             <p>Bad: {bad}</p>
@@ -14,4 +17,4 @@ const Results = ({ good, neutral, bad }) => {
     )
 }
 
-export default Results
+export default Statistics

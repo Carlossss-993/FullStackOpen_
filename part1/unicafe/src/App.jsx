@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Header from "./Header"
 import Button from "./Button"
 import Results from './Results'
+import Statistics from './Results'
 
 const App = () => {
 
@@ -20,8 +21,7 @@ const App = () => {
       <Button onClick={handleGood} text="Good"/>
       <Button onClick={handleNeutral} text="Neutral"/>
       <Button onClick={handleBad} text="Bad"/>
-      <Header text="Statistics"/>
-      <Results good={good} neutral={neutral} bad={bad}/>
+      <Statistics good={good} neutral={neutral} bad={bad}/>
     </>
   )
 }
