@@ -1,10 +1,15 @@
-const Total = (props) => {
+const Total = ({ parts }) => {
     
-    let total = 0
-    props.parts.forEach(part => total+=part.exercises)
     return (
         <p>
-            <strong>Number of exercises {total}</strong>
+            <strong>Number of exercises {
+                parts.reduce((acum, part) => {
+                    return (
+                        acum + part.exercises
+                    )
+                }, 0)
+                }
+            </strong>
         </p>
     )
 }
