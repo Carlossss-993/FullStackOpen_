@@ -1,3 +1,7 @@
-const Anecdote = ({ text }) => <p>{text}</p>
+const Anecdote = ({ text, votes }) => 
+<>
+    <p>{text}</p>
+    <p>Votes: {votes}</p>
+</>
 
 export default Anecdote
