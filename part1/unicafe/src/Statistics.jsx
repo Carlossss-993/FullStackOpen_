@@ -1,4 +1,5 @@
 import Header from "./Header"
+import StatisticLine from "./StatisticLine"
 
 const Statistics = ({ good, neutral, bad }) => {
 
@@ -12,12 +13,12 @@ const Statistics = ({ good, neutral, bad }) => {
         </div> :
         <div>
             <Header text="Statistics"/>
-            <p>Good: {good}</p>
-            <p>Neutral: {neutral}</p>
-            <p>Bad: {bad}</p>
-            <p>All: {total}</p>
-            <p>Average: {(good-bad)/(total)}</p>
-            <p>Positive: {good/(total)}</p>
+            <StatisticLine text="Good" value={good} />
+            <StatisticLine text="Neutral" value={neutral} />
+            <StatisticLine text="Bad" value={bad} />
+            <StatisticLine text="All" value={total} />
+            <StatisticLine text="Average" value={(good-bad)/(total)} />
+            <StatisticLine text="Positive" value={good/(total)} />
         </div>
     )
 }
