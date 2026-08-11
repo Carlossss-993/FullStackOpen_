@@ -2,8 +2,7 @@ import { useState } from 'react'
 
 import Header from "./Header"
 import Button from "./Button"
-import Results from './Results'
-import Statistics from './Results'
+import Statistics from './Statistics'
 
 const App = () => {
 
