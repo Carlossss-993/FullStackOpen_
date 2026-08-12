@@ -1,17 +1,23 @@
 import axios from 'axios'
 
-const link = 'http://localhost:3001/persons'
+const baseURL = 'http://localhost:3001/persons'
 
 const getAll = () => {
     return axios
-        .get(link)
+        .get(baseURL)
         .then((promise) => promise.data)
 }
 
 const add = ( newPerson ) => {
     return axios
-        .post(link, newPerson)
+        .post(baseURL, newPerson)
         .then((promise) => promise.data)
 }
 
-export default { getAll, add }
+const remove = ( id ) => {
+    return axios
+        .delete(`${baseURL}/${id}`)
+        .then((promise) => promise.data)
+}
+
+export default { getAll, add, remove }

@@ -14,6 +14,26 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
+  const handleInputName = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleInputNumber = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const handleInputFilter = (event) => {
+    setFilter(event.target.value)
+    
+    const newPersons = persons.filter((person) => person.name.toLowerCase().startsWith(event.target.value.toLowerCase()))
+    
+    if (event.target.value === '') {
+      setPersonsToShow(persons)
+    } else {
+      setPersonsToShow(newPersons)
+    }
+  }
+
   useEffect(() => {
     phoneService
       .getAll()
@@ -25,6 +45,7 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} has already been added to this phoneBook`)
       setNewName('')
@@ -41,22 +62,18 @@ const App = () => {
     }
   }
 
-  const handleInputName = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleInputNumber = (event) => {
-    setNewNumber(event.target.value)
-  }
-
-  const handleInputFilter = (event) => {
-    setFilter(event.target.value)
-    const newPersons = persons.filter((person) => person.name.toLowerCase().startsWith(event.target.value.toLowerCase()))
+  const toggleRemovePerson = ( id ) => {
+    const personToRemove = persons.find((person) => person.id === id)
+    const result = window.confirm(`Remove ${personToRemove.name}?`)
     
-    if (event.target.value === '') {
-      setPersonsToShow(persons)
-    } else {
-      setPersonsToShow(newPersons)
+    if (result) {
+      phoneService
+        .remove(id)
+        .then((removedPerson) => {
+          setPersons(persons.filter(person => person.id != id))
+          setPersonsToShow(personsToShow.filter(person => person.id != id))
+          alert(`${removedPerson.name} has been removed`)
+        })
     }
   }
 
@@ -66,7 +83,7 @@ const App = () => {
       <PersonForm newName={newName} handleInputName={handleInputName} newNumber={newNumber} handleInputNumber={handleInputNumber} handleSubmit={handleSubmit} />
       <h2>Numbers</h2>
       <Filter filter={filter} handleInputFilter={handleInputFilter} />
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} toggleRemovePerson={toggleRemovePerson}/>
     </div>
   )
 }

@@ -24,6 +24,11 @@
       "name": "Celeste",
       "number": "549-321",
       "id": "YbZ0eDebxYI"
+    },
+    {
+      "name": "Tania",
+      "number": "533-987",
+      "id": "o_VdNaQsiCU"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
