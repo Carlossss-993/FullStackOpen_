@@ -47,24 +47,41 @@ const App = () => {
     event.preventDefault()
     
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} has already been added to this phoneBook`)
-      setNewName('')
+      const result = window.confirm(`${newName} has already been added to this phoneBook, would you like to replace the old number with the new one?`)
+      if (result) {
+        const personToReplace = persons.filter(person => person.name === newName)[0]
+        
+        phoneService
+          .replace(personToReplace.id, {name: newName, number: newNumber})
+          .then(replacedPerson => {
+            setPersons(persons.map(person => 
+              person.id === replacedPerson.id
+                ? replacedPerson
+                : person
+            ))
+            setPersonsToShow(personsToShow.map(person => 
+              person.id === replacedPerson.id
+                ? replacedPerson
+                : person
+            ))
+          })
+      }
     } else {
       phoneService
         .add({name: newName, number: newNumber})
         .then((addedPerson) => {
           setPersons(persons.concat(addedPerson))
           setPersonsToShow(persons.concat(addedPerson))
-          setNewName('')
-          setNewNumber('')
-          setFilter('')
         })
     }
+    setNewName('')
+    setNewNumber('')
+    setFilter('')
   }
 
   const toggleRemovePerson = ( id ) => {
     const personToRemove = persons.find((person) => person.id === id)
-    const result = window.confirm(`Remove ${personToRemove.name}?`)
+    const result = window.confirm(`Would you like to remove ${personToRemove.name}?`)
     
     if (result) {
       phoneService

@@ -1,10 +1,10 @@
 import Person from "./Person"
 
 const Persons = ({ personsToShow, toggleRemovePerson }) => {
-  
+  console.log(personsToShow)
   return (
     <>
-      {personsToShow.map((person) => <Person key={person.name} person={person} toggleRemovePerson={toggleRemovePerson} />)}
+      {personsToShow.map((person) => <Person key={person.id} person={person} toggleRemovePerson={toggleRemovePerson} />)}
     </>
   );
 };
