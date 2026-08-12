@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 import phoneService from './services/phone'
 
@@ -13,6 +14,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+
+  const [notification, setNotification] = useState(null)
 
   const handleInputName = (event) => {
     setNewName(event.target.value)
@@ -40,6 +43,8 @@ const App = () => {
       .then((initialPersons) => {
         setPersons(initialPersons)
         setPersonsToShow(initialPersons)
+        setNotification({message: 'Hi Carlos', isAnError: false})
+        setTimeout(() => setNotification(null), 5000)
       })
   }, []);
 
@@ -64,6 +69,14 @@ const App = () => {
                 ? replacedPerson
                 : person
             ))
+            setNotification({message: `${newName} has been updated`, isAnError: false})
+            setTimeout(() => setNotification(null), 5000)
+          })
+          .catch(error => {
+            setNotification({message: `${newName} was already removed from server`, isAnError: true})
+            setTimeout(() => setNotification(null), 5000)
+            setPersons(persons.filter(person => person.name != newName))
+            setPersonsToShow(personsToShow.filter(person => person.name != newName))
           })
       }
     } else {
@@ -72,8 +85,10 @@ const App = () => {
         .then((addedPerson) => {
           setPersons(persons.concat(addedPerson))
           setPersonsToShow(persons.concat(addedPerson))
+          setNotification({message: `${newName} has been added`, isAnError: false})
+          setTimeout(() => setNotification(null), 5000)
         })
-    }
+      }
     setNewName('')
     setNewNumber('')
     setFilter('')
@@ -89,14 +104,16 @@ const App = () => {
         .then((removedPerson) => {
           setPersons(persons.filter(person => person.id != id))
           setPersonsToShow(personsToShow.filter(person => person.id != id))
-          alert(`${removedPerson.name} has been removed`)
+          setNotification({message: `${removedPerson.name} has been removed`, isAnError: false})
+          setTimeout(() => setNotification(null), 5000)
         })
     }
   }
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Notification notification={notification}/>
       <PersonForm newName={newName} handleInputName={handleInputName} newNumber={newNumber} handleInputNumber={handleInputNumber} handleSubmit={handleSubmit} />
       <h2>Numbers</h2>
       <Filter filter={filter} handleInputFilter={handleInputFilter} />
