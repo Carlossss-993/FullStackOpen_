@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
+
+import phoneService from './services/phone'
 
 const App = () => {
 
@@ -14,13 +15,31 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-        setPersonsToShow(response.data)
+    phoneService
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons)
+        setPersonsToShow(initialPersons)
       })
   }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    if (persons.some((person) => person.name === newName)) {
+      alert(`${newName} has already been added to this phoneBook`)
+      setNewName('')
+    } else {
+      phoneService
+        .add({name: newName, number: newNumber})
+        .then((addedPerson) => {
+          setPersons(persons.concat(addedPerson))
+          setPersonsToShow(persons.concat(addedPerson))
+          setNewName('')
+          setNewNumber('')
+          setFilter('')
+        })
+    }
+  }
 
   const handleInputName = (event) => {
     setNewName(event.target.value)
@@ -38,20 +57,6 @@ const App = () => {
       setPersonsToShow(persons)
     } else {
       setPersonsToShow(newPersons)
-    }
-  }
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} has already been added to this phoneBook`)
-      setNewName('')
-    } else {
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setPersonsToShow(persons.concat({name: newName, number: newNumber}))
-      setNewName('')
-      setNewNumber('')
-      setFilter('')
     }
   }
 
