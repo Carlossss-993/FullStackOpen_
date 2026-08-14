@@ -18,8 +18,15 @@ function App() {
 
   const onChange = (event) => {
     setValue(event.target.value.toLowerCase())
-    setCountriesToShow(countries.filter((country) => country.name.common.toLowerCase().startsWith(event.target.value.toLowerCase())))
+    const newCountries = countries.filter((country) => country.name.common.toLowerCase().startsWith(event.target.value.toLowerCase()))
+    newCountries.forEach(country => country.visible = false)
+    setCountriesToShow(newCountries)
   }
+
+  const onClick = ( countryToShow ) => {
+    setCountriesToShow(countriesToShow.filter(country => country.name.common === countryToShow))
+  }
+    
 
   return (
     <div>
@@ -42,7 +49,12 @@ function App() {
             </>
           : countriesToShow.length === 0
             ? <p>There are not countries named as you wrote</p>
-            : countriesToShow.map((country) => <p key={country.name.official}>{country.name.common}</p>)
+            : countriesToShow.map((country) => 
+              <>
+                <p key={country.name.official}>
+                  {country.name.common} <button key={`${country.name.official}Button`} onClick={() => {onClick(country.name.common)}} >Show</button>
+                </p>
+              </>)
       }
     </div>
   )
