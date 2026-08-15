@@ -26,6 +26,10 @@ let persons = [
     }
 ]
 
+const generateId = () => {
+    return Math.floor((Math.random() * 1000000))
+}
+
 app.get('/', (req, res) => {
   res.send(`
     <div>
@@ -76,6 +80,20 @@ app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     persons = persons.filter((person) => person.id !== id)
     res.status(204).end()
+})
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+    
+    if (body.name && body.number) {
+        const newPerson = {id: generateId(), name: body.name, number: body.number}
+        persons = persons.concat(newPerson)
+        res.send(newPerson)
+    } else {
+        return res.status(400).json({
+            error: 'content missing'
+        })
+    }
 })
 
 
