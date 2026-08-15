@@ -53,6 +53,26 @@ app.get('/api/persons', (req, res) => {
     res.send(persons)
 })
 
+app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const personToShow = persons.find((person) => person.id === id)
+    if (personToShow) {
+        res.send(personToShow)
+    } else {
+        res.status(404)
+        res.send(`
+            <div>
+                <h1>Person not found</h1>
+                <p>Please try with another id</p>
+                <a href="/">Back to home</a><br/>
+                <a href="/info">Consult our info</a><br/>
+                <a href="/api/persons">Visit our API</a>
+            </div>    
+        `)
+    }
+    
+})
+
 
 
 const PORT = 3001
