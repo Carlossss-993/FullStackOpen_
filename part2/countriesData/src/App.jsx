@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 
 import countriesService from './services/countries'
+import weatherService from './services/weather'
 
 function App() {
 
   const [ value, setValue ] = useState('')
   const [ countries, setCountries ] = useState([])
   const [ countriesToShow, setCountriesToShow ] = useState([])
+
+  const [ weatherInfo, setWeatherInfo ] = useState(null)
 
   useEffect(() => {
     countriesService.getAll()
@@ -19,12 +22,17 @@ function App() {
   const onChange = (event) => {
     setValue(event.target.value.toLowerCase())
     const newCountries = countries.filter((country) => country.name.common.toLowerCase().startsWith(event.target.value.toLowerCase()))
-    newCountries.forEach(country => country.visible = false)
     setCountriesToShow(newCountries)
+    if (newCountries.length === 1) {
+      weatherService
+        .getWeather(countriesToShow[0].capitalInfo.latlng)
+        .then(data => {setWeatherInfo(data)})
+    }
   }
 
   const onClick = ( countryToShow ) => {
     setCountriesToShow(countriesToShow.filter(country => country.name.common === countryToShow))
+    setWeatherInfo(weatherService.getWeather(countriesToShow[0].capitalInfo.latlng))
   }
     
 
@@ -46,6 +54,17 @@ function App() {
                 {Object.values(countriesToShow[0].languages).map(lang => <li key={lang}>{lang}</li>)}
               </ul>
               <img src={countriesToShow[0].flags.png} />
+              {weatherInfo === null
+                ? null
+                : <>
+                    {console.log(weatherInfo)}
+                    <p>Temperature: {weatherInfo.main.temp}</p>
+                    <img 
+                      src={weatherService.getIconLink(weatherInfo.weather[0].icon)} 
+                    />
+                    <p>Wind: {weatherInfo.wind.speed} m/s</p>
+                  </>
+              }
             </>
           : countriesToShow.length === 0
             ? <p>There are not countries named as you wrote</p>
