@@ -30,9 +30,23 @@ app.get('/', (req, res) => {
   res.send(`
     <div>
       <h1>Welcome to your Phonebook</h1>
+      <a href="/info">Consult our info</a><br/>
       <a href="/api/persons">Visit our API</a>
     </div>
   `)
+})
+
+app.get('/info', (req, res) => {
+    const currentDate = new Date()
+    res.send(`
+    <div>
+      <h1>Welcome to your Phonebook info</h1>
+      <p>Your phonebook has info for ${persons.length} people</p>
+      <p>${currentDate}</p>
+      <a href="/">Back to home</a><br/>
+      <a href="/api/persons">Visit our API</a>
+    </div>
+    `)
 })
 
 app.get('/api/persons', (req, res) => {
