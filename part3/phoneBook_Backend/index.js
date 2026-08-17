@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
+app.use(express.static('dist'))
 
 const morgan = require('morgan')
 app.use(morgan((tokens, req, res) => {
@@ -44,7 +45,7 @@ const generateId = () => {
     return Math.floor((Math.random() * 1000000))
 }
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.send(`
     <div>
       <h1>Welcome to your Phonebook</h1>
@@ -54,7 +55,7 @@ app.get('/', (req, res) => {
   `)
 })
 
-app.get('/info', (req, res) => {
+app.get('/api/info', (req, res) => {
     const currentDate = new Date()
     res.send(`
     <div>
