@@ -1,0 +1,16 @@
+.error {
+    color:rgb(235, 235, 235);
+    border-radius: 5px;
+    padding: 5px;
+    border-style: solid;
+    background: rgb(100, 0, 0);
+}
+
+.notification {
+    color:rgb(235, 235, 235);
+    border-radius: 5px;
+    padding: 7px;
+    border-style: solid;
+    background: rgb(0, 100, 0);
+}
+  
