@@ -99,16 +99,21 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const removedPerson = persons.filter((person) => person.id === id)
-    if (removedPerson) {
-        persons = persons.filter((person) => person.id !== removedPerson.id)
-        res.send(removedPerson)
-    } else {
-        res.status(404).json({
-            error: 'Person not found'
+    Person.findByIdAndDelete(req.params.id)
+        .then(person => {
+            if (person) {
+                res.send(person)
+            } else {
+                res.status(404).json({
+                    error: 'Person not found'
+                })
+            }
         })
-    }  
+        .catch(error => 
+            res.status(500).json({
+                error: 'malformatted id'
+            })
+        )
 })
 
 app.post('/api/persons', (req, res) => {

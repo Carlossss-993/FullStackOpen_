@@ -1,17 +1,52 @@
 ###
 
+# Get every person on DB
 GET http://localhost:3002/api/persons
 
 ###
 
+# Get one person who exists on DB
 GET http://localhost:3002/api/persons/6a83962792f6bd6624916bf8
 
 ###
 
-DELETE http://localhost:3002/api/persons/6a83962792f6bd6624916bf8
+# Get one person who does not exist on DB
+GET http://localhost:3002/api/persons/6a83962792f6bd6624916bf7
 
 ###
 
+# Get one person with a malformatted id on DB
+GET http://localhost:3002/api/persons/1
+
+###
+
+# Delete a person who exists on DB
+DELETE http://localhost:3002/api/persons/6a83a7d51c2944e1daab97b3
+
+###
+
+# Delete a person who does not exist on DB
+DELETE http://localhost:3002/api/persons/6a83a7d51c2944e1daab97b4
+
+###
+
+# Delete a person with a malformatted id on DB
+DELETE http://localhost:3002/api/persons/1
+
+###
+
+# Post a person
+POST http://localhost:3002/api/persons
+Content-Type: application/json
+
+{
+    "name": "Celeste",
+    "number": "549-999"
+}
+
+###
+
+# Post a person with no number
 POST http://localhost:3002/api/persons
 Content-Type: application/json
 
@@ -21,6 +56,7 @@ Content-Type: application/json
 
 ###
 
+# Post a person who already exists
 POST http://localhost:3002/api/persons
 Content-Type: application/json
 
@@ -30,11 +66,3 @@ Content-Type: application/json
 }
 
 ###
-
-POST http://localhost:3002/api/persons
-Content-Type: application/json
-
-{
-    "name": "Celeste",
-    "number": "549-999"
-}
