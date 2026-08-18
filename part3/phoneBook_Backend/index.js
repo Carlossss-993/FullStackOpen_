@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 app.use(express.json())
@@ -17,6 +19,8 @@ app.use(morgan((tokens, req, res) => {
     }
     return log.join(' ')
 }))
+
+const Person = require('./models/person')
 
 let persons = [
     { 
@@ -49,6 +53,7 @@ app.get('/api', (req, res) => {
   res.send(`
     <div>
       <h1>Welcome to your Phonebook</h1>
+      <a href="/">Back to home</a><br/>
       <a href="/info">Consult our info</a><br/>
       <a href="/api/persons">Visit our API</a>
     </div>
@@ -63,21 +68,23 @@ app.get('/api/info', (req, res) => {
       <p>Your phonebook has info for ${persons.length} people</p>
       <p>${currentDate}</p>
       <a href="/">Back to home</a><br/>
+      <a href="/">Back to API home</a><br/>
       <a href="/api/persons">Visit our API</a>
     </div>
     `)
 })
 
 app.get('/api/persons', (req, res) => {
-    res.send(persons)
+    Person.find({}).then(persons => {
+        res.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const personToShow = persons.find((person) => person.id === id)
-    if (personToShow) {
-        res.send(personToShow)
-    } else {
+    Person.findById(req.params.id).then(person => {
+        res.json(person)
+    })
+    .catch(error => {
         res.status(404)
         res.send(`
             <div>
@@ -88,7 +95,7 @@ app.get('/api/persons/:id', (req, res) => {
                 <a href="/api/persons">Visit our API</a>
             </div>    
         `)
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -113,21 +120,17 @@ app.post('/api/persons', (req, res) => {
         })
     }
 
-    if (persons.find((person) => person.name === body.name)) {
-        return res.status(400).json({
-            error: 'name must be unique'
-        })
-    }
+    const newPerson = new Person({
+        name: body.name, 
+        number: body.number
+    })
 
-    const newPerson = {id: generateId(), name: body.name, number: body.number}
-    persons = persons.concat(newPerson)
-    res.send(newPerson)
-
+    newPerson.save().then(savedPerson => {
+        res.json(savedPerson)
+    })
 })
 
-
-
-const PORT = 3001
-
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
