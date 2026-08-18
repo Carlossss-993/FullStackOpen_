@@ -22,33 +22,6 @@ app.use(morgan((tokens, req, res) => {
 
 const Person = require('./models/person')
 
-let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
-const generateId = () => {
-    return Math.floor((Math.random() * 1000000))
-}
-
 app.get('/api', (req, res) => {
   res.send(`
     <div>
@@ -68,7 +41,7 @@ app.get('/api/info', (req, res) => {
       <p>Your phonebook has info for ${persons.length} people</p>
       <p>${currentDate}</p>
       <a href="/">Back to home</a><br/>
-      <a href="/">Back to API home</a><br/>
+      <a href="/api">Back to API home</a><br/>
       <a href="/api/persons">Visit our API</a>
     </div>
     `)
@@ -80,25 +53,29 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    Person.findById(req.params.id).then(person => {
-        res.json(person)
-    })
-    .catch(error => {
-        res.status(404)
-        res.send(`
-            <div>
-                <h1>Person not found</h1>
-                <p>Please try with another id</p>
-                <a href="/">Back to home</a><br/>
-                <a href="/info">Consult our info</a><br/>
-                <a href="/api/persons">Visit our API</a>
-            </div>    
-        `)
-    })
+app.get('/api/persons/:id', (req, res, next) => {
+    Person.findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(person)
+            } else {
+                res.status(404)
+                res.send(`
+                    <div>
+                        <h1>Person not found</h1>
+                        <p>Please try with another id</p>
+                        <a href="/">Back to home</a><br/>
+                        <a href="/api">Back to API home</a><br/>
+                        <a href="/info">Consult our info</a><br/>
+                        <a href="/api/persons">Visit our API</a>
+                    </div>    
+                `)
+            }
+        })
+        .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(person => {
             if (person) {
@@ -109,14 +86,10 @@ app.delete('/api/persons/:id', (req, res) => {
                 })
             }
         })
-        .catch(error => 
-            res.status(500).json({
-                error: 'malformatted id'
-            })
-        )
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const body = req.body
     
     if (!body.name || !body.number) {
@@ -130,10 +103,32 @@ app.post('/api/persons', (req, res) => {
         number: body.number
     })
 
-    newPerson.save().then(savedPerson => {
-        res.json(savedPerson)
-    })
+    newPerson.save()
+        .then(savedPerson => {
+            res.json(savedPerson)
+        })
+        .catch(error => next(error))
 })
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
+
+
+const errorHandler = ((error, req, res, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).send({ error: 'content missing'})
+    }
+
+    next(error)
+})
+app.use(errorHandler)
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
