@@ -70,16 +70,17 @@ const App = () => {
             ))
             setNotification({message: `${newName} has been updated`, isAnError: false})
             setTimeout(() => setNotification(null), 5000)
+            setNewName('')
+            setNewNumber('')
+            setFilter('')
           })
           .catch(error => {
-            setNotification({message: `${newName} was already removed from server`, isAnError: true})
+            const errorMessage = error.response.data.error
+            setNotification({ message: errorMessage, isAnError: true })
             setTimeout(() => setNotification(null), 5000)
-            setPersons(persons.filter(person => person.name != newName))
-            setPersonsToShow(personsToShow.filter(person => person.name != newName))
           })
       }
     } else {
-      
       phoneService
         .add({name: newName, number: newNumber})
         .then((addedPerson) => {
@@ -87,6 +88,9 @@ const App = () => {
           setPersonsToShow(persons.concat(addedPerson))
           setNotification({message: `${newName} has been added`, isAnError: false})
           setTimeout(() => setNotification(null), 5000)
+          setNewName('')
+          setNewNumber('')
+          setFilter('')
         })
         .catch(error => {
           const errorMessage = error.response.data.error
@@ -94,11 +98,6 @@ const App = () => {
           setTimeout(() => setNotification(null), 5000)
         })
     }
-
-    setNewName('')
-    setNewNumber('')
-    setFilter('')
-    
   }
 
   const toggleRemovePerson = ( id ) => {
