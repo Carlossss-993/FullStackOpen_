@@ -5,17 +5,17 @@ GET http://localhost:3002/api/persons
 
 ###
 
-# Get one person who exists on DB
+# Get a person who exists on DB
 GET http://localhost:3002/api/persons/6a83962792f6bd6624916bf8
 
 ###
 
-# Get one person who does not exist on DB
+# Get a person who does not exist on DB
 GET http://localhost:3002/api/persons/6a83962792f6bd6624916bf7
 
 ###
 
-# Get one person with a malformatted id on DB
+# Get a person with a malformatted id on DB
 GET http://localhost:3002/api/persons/1
 
 ###
@@ -55,3 +55,34 @@ Content-Type: application/json
 }
 
 ###
+
+# Update a person who exists
+PUT http://localhost:3002/api/persons/6a83a97d6815abd7cc9ca835
+Content-Type: application/json
+
+{
+    "name": "Haz",
+    "number": "521-888"
+}
+
+###
+
+# Update a person who does not exist
+PUT http://localhost:3002/api/persons/6a83a97d6815abd7cc9ca834
+Content-Type: application/json
+
+{
+    "name": "Haz",
+    "number": "521-888"
+}
+
+###
+
+# Update a person with a malformatted id
+PUT http://localhost:3002/api/persons/1
+Content-Type: application/json
+
+{
+    "name": "Haz",
+    "number": "521-888"
+}

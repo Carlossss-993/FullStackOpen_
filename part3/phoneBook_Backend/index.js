@@ -90,22 +90,33 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 app.post('/api/persons', (req, res, next) => {
-    const body = req.body
-    
-    if (!body.name || !body.number) {
-        return res.status(400).json({
-            error: 'content missing'
-        })
-    }
 
     const newPerson = new Person({
-        name: body.name, 
-        number: body.number
+        name: req.body.name, 
+        number: req.body.number
     })
 
     newPerson.save()
         .then(savedPerson => {
             res.json(savedPerson)
+        })
+        .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+    Person.findByIdAndUpdate(
+        req.params.id, 
+        { name: req.body.name, number: req.body.number },
+        { new: true, runValidators: true, context: 'queery' }
+    )   
+        .then(updatedPerson => {
+            if (updatedPerson) {
+                res.json(updatedPerson)
+            } else {
+                res.status(404).json({
+                    error: 'person not found'
+                })
+            }
         })
         .catch(error => next(error))
 })

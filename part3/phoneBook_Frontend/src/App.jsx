@@ -50,68 +50,54 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-
-    phoneService
-      .add({name: newName, number: newNumber})
-      .then((addedPerson) => {
-        setPersons(persons.concat(addedPerson))
-        setPersonsToShow(persons.concat(addedPerson))
-        setNotification({message: `${newName} has been added`, isAnError: false})
-        setTimeout(() => setNotification(null), 5000)
-      })
-      .catch(error => {
-        const errorMessage = error.response.data.error
-        setNotification({ message: errorMessage, isAnError: true })
-        setTimeout(() => setNotification(null), 5000)
-      })
+    if (persons.find(person => person.name === newName)) {
+      const result = window.confirm(`${newName} has already been added to this phoneBook, would you like to replace the old number with the new one?`)
+      if (result) {
+        const personToReplace = persons.filter(person => person.name === newName)[0]
+        
+        phoneService
+          .replace(personToReplace.id, {name: newName, number: newNumber})
+          .then(replacedPerson => {
+            setPersons(persons.map(person => 
+              person.id === replacedPerson.id
+                ? replacedPerson
+                : person
+            ))
+            setPersonsToShow(personsToShow.map(person => 
+              person.id === replacedPerson.id
+                ? replacedPerson
+                : person
+            ))
+            setNotification({message: `${newName} has been updated`, isAnError: false})
+            setTimeout(() => setNotification(null), 5000)
+          })
+          .catch(error => {
+            setNotification({message: `${newName} was already removed from server`, isAnError: true})
+            setTimeout(() => setNotification(null), 5000)
+            setPersons(persons.filter(person => person.name != newName))
+            setPersonsToShow(personsToShow.filter(person => person.name != newName))
+          })
+      }
+    } else {
+      
+      phoneService
+        .add({name: newName, number: newNumber})
+        .then((addedPerson) => {
+          setPersons(persons.concat(addedPerson))
+          setPersonsToShow(persons.concat(addedPerson))
+          setNotification({message: `${newName} has been added`, isAnError: false})
+          setTimeout(() => setNotification(null), 5000)
+        })
+        .catch(error => {
+          const errorMessage = error.response.data.error
+          setNotification({ message: errorMessage, isAnError: true })
+          setTimeout(() => setNotification(null), 5000)
+        })
+    }
 
     setNewName('')
     setNewNumber('')
     setFilter('')
-    
-    // if (persons.some((person) => person.name === newName)) {
-    //   const result = window.confirm(`${newName} has already been added to this phoneBook, would you like to replace the old number with the new one?`)
-    //   if (result) {
-    //     const personToReplace = persons.filter(person => person.name === newName)[0]
-        
-    //     phoneService
-    //       .replace(personToReplace.id, {name: newName, number: newNumber})
-    //       .then(replacedPerson => {
-    //         setPersons(persons.map(person => 
-    //           person.id === replacedPerson.id
-    //             ? replacedPerson
-    //             : person
-    //         ))
-    //         setPersonsToShow(personsToShow.map(person => 
-    //           person.id === replacedPerson.id
-    //             ? replacedPerson
-    //             : person
-    //         ))
-    //         setNotification({message: `${newName} has been updated`, isAnError: false})
-    //         setTimeout(() => setNotification(null), 5000)
-    //       })
-    //       .catch(error => {
-    //         setNotification({message: `${newName} was already removed from server`, isAnError: true})
-    //         setTimeout(() => setNotification(null), 5000)
-    //         setPersons(persons.filter(person => person.name != newName))
-    //         setPersonsToShow(personsToShow.filter(person => person.name != newName))
-    //       })
-    //   }
-    // } else {
-    //   phoneService
-    //     .add({name: newName, number: newNumber})
-    //     .then((addedPerson) => {
-    //       setPersons(persons.concat(addedPerson))
-    //       setPersonsToShow(persons.concat(addedPerson))
-    //       setNotification({message: `${newName} has been added`, isAnError: false})
-    //       setTimeout(() => setNotification(null), 5000)
-    //     })
-    //     .catch(error => {
-    //       const errorMessage = error.response.data.error
-    //       setNotification({ message: errorMessage, isAnError: true })
-    //       setTimeout(() => setNotification(null), 5000)
-    //     })
-    //   }
     
   }
 
