@@ -8,8 +8,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "React v18.0",
-  "author": "React Team",
-  "url": "https://reactjs.org/blog/2022/03/29/react-v18.html",
-  "likes": 12
+  "title": "First class tests",
+  "author": "Robert C. Martin",
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htm",
+  "likes": 10
 }
