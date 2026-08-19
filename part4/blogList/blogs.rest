@@ -1,0 +1,15 @@
+###
+
+GET http://localhost:3003/api/blogs
+
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "React v18.0",
+  "author": "React Team",
+  "url": "https://reactjs.org/blog/2022/03/29/react-v18.html",
+  "likes": 12
+}
