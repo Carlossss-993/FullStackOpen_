@@ -18,16 +18,23 @@ beforeEach(async () => {
   }
 })
 
-test.only('blogs are returned as JSON', async () => {
+test('blogs are returned as JSON', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
 
-test.only('all blogs are returned', async () => {
+test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
   assert.strictEqual(helper.initialBLogs.length, response.body.length)
+})
+
+test.only('blogs returned have "id" property defined instead of "_id"', async () => {
+  const response = await api.get('/api/blogs')
+  const blogToCheck = response.body[0]
+  assert.notStrictEqual(blogToCheck.id, undefined)
+  assert.strictEqual(blogToCheck._id, undefined)
 })
 
 after(async () => {
