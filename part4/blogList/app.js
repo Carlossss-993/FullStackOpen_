@@ -8,7 +8,7 @@ const morgan = require('morgan')
 
 const { unknownEndpoint, errorHandler } = require('./utils/middleware')
 
-const mongoUrl = config.MONGOOSE_URI
+const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl)
 
 app.use(cors())

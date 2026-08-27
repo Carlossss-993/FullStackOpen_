@@ -27,7 +27,7 @@ const favoriteBlog = blogs => {
 //       return authors
 //     }, [])
 
-//   return newAuthors.reduce((mostBlogsAuthor, author) => 
+//   return newAuthors.reduce((mostBlogsAuthor, author) =>
 //     author.blogs > mostBlogsAuthor.blogs
 //       ? author
 //       : mostBlogsAuthor
@@ -56,7 +56,7 @@ const mostBlogs = blogs => {
 //       return authors
 //     }, [])
 
-//   return newAuthors.reduce((mostBlogsAuthor, author) => 
+//   return newAuthors.reduce((mostBlogsAuthor, author) =>
 //     author.likes > mostBlogsAuthor.likes
 //       ? author
 //       : mostBlogsAuthor
