@@ -75,7 +75,7 @@ test('default "likes" property is 0', async () => {
   assert.strictEqual(blogsAtEnd.at(-1).likes, 0)
 })
 
-test.only('a blog without "url" property cannot be added', async () => {
+test('a blog without "url" property cannot be added', async () => {
   const newBlog = {
     title: 'TDD harms architecture',
     author: 'Robert C. Martin',
@@ -86,9 +86,12 @@ test.only('a blog without "url" property cannot be added', async () => {
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBLogs.length)
 })
 
-test.only('a blog without "title" property cannot be added', async () => {
+test('a blog without "title" property cannot be added', async () => {
   const newBlog = {
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
@@ -99,6 +102,42 @@ test.only('a blog without "title" property cannot be added', async () => {
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBLogs.length)
+})
+
+test.only('a blog with a valid id can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBLogs.length - 1)
+})
+
+test.only('a blog with an invalid id cannot be deleted', async () => {
+
+  await api
+    .delete('/api/blogs/1')
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(helper.initialBLogs.length, blogsAtEnd.length)
+})
+
+test.only('a blog with an non existing id cannot be deleted', async () => {
+  const nonExixtingId = await helper.nonExistingId()
+
+  await api
+    .delete(`/api/blogs/${nonExixtingId}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(helper.initialBLogs.length, blogsAtEnd.length)
 })
 
 after(async () => {
