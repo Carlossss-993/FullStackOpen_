@@ -58,7 +58,7 @@ test('A valid blog can be added', async () => {
   assert(titles.includes('TDD harms architecture'))
 })
 
-test.only('default "likes" property is 0', async () => {
+test('default "likes" property is 0', async () => {
   const newBlog = {
     title: 'TDD harms architecture',
     author: 'Robert C. Martin',
@@ -73,6 +73,32 @@ test.only('default "likes" property is 0', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.at(-1).likes, 0)
+})
+
+test.only('a blog without "url" property cannot be added', async () => {
+  const newBlog = {
+    title: 'TDD harms architecture',
+    author: 'Robert C. Martin',
+    likes: 8
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test.only('a blog without "title" property cannot be added', async () => {
+  const newBlog = {
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    likes: 8
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 after(async () => {
